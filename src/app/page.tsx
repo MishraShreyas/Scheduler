@@ -1,8 +1,5 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import Dashboard from "@/components/dashboard-02";
-import Authentication from "@/components/authentication-02";
+import Navbar from "@/components/nav/navbar";
 
 export default function Home() {
-    return <Dashboard />;
+    return <div />;
 }

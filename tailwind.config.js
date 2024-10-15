@@ -1,5 +1,3 @@
-const { fontFamily } = require("tailwindcss/defaultTheme")
-
 /** @type {import('tailwindcss').Config} */
 export const content = ["./src/**/*.{js,ts,jsx,tsx,mdx}",];
 export const theme = {
@@ -52,7 +50,8 @@ export const theme = {
             sm: "calc(var(--radius) - 4px)",
         },
         fontFamily: {
-            sans: ["var(--font-sans)", ...fontFamily.sans],
+            sans: ['var(--font-geist-sans)'],
+            mono: ['var(--font-geist-mono)'],
         },
         keyframes: {
             "accordion-down": {
