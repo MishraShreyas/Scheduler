@@ -1,5 +1,5 @@
-import Navbar from "@/components/nav/navbar";
+import TestPage from "@/components/test/page";
 
 export default function Home() {
-    return <div />;
+    return <TestPage />;
 }
