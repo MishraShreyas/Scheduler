@@ -22,10 +22,6 @@ export default function UserManager() {
 
     const userImage = session?.user?.image || ""
 
-    useEffect(() => {
-        console.log(session)
-    }, [session])
-
     if (session) return (
         <Popover>
             <PopoverTrigger asChild>

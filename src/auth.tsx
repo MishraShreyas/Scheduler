@@ -2,6 +2,27 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Discord from "next-auth/providers/discord"
 import Credentials from "next-auth/providers/credentials"
+
+async function updateUser(id: string, name: string, email: string) {
+    const uri = process.env.HOST_URI+'/api/users/updateUser'
+    return await fetch(uri, {
+        method: 'POST',
+        body: JSON.stringify({ id, name, email }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+async function getDiscordId(access_token: string) {
+    const userData = await fetch('https://discord.com/api/users/@me', {
+        headers: {
+            Authorization: `Bearer ${access_token}`
+        }
+    })
+    const data = await userData.json()
+    return data.id
+}
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
     providers: [
@@ -34,4 +55,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         Google,
         Discord
     ],
+    callbacks: {
+        async jwt({ token, user, account }) {
+            if (user) {
+                if (account?.access_token) {
+                    const id = await getDiscordId(account.access_token)
+                    user.id = id
+                    token.id = id
+                    updateUser(id, user.name as string, user.email as string)
+                } else {
+                    token.id = user.id
+                }
+            }
+            return token
+        },
+        session({ session, token }) {
+            if (session?.user) {
+                session.user.id = token.id as string
+            }
+            return session
+        },
+    }
 })
