@@ -2,13 +2,16 @@ import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Discord from "next-auth/providers/discord"
 import Credentials from "next-auth/providers/credentials"
-import { AddUser, GetUser } from "./lib/mongodb"
 
 async function updateUser(id: string, name: string, email: string) {
-    const userData = await GetUser(id)
-    if (!userData) {
-        await AddUser(JSON.stringify({id, name, email}), new Date().getTimezoneOffset())
-    }
+    const uri = process.env.HOST_URI+'/api/users/updateUser'
+    return await fetch(uri, {
+        method: 'POST',
+        body: JSON.stringify({ id, name, email }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 async function getDiscordId(access_token: string) {
@@ -55,7 +58,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks: {
         async jwt({ token, user, account }) {
             if (user) {
-                console.log('logged in', token, user)
                 if (account?.access_token) {
                     const id = await getDiscordId(account.access_token)
                     user.id = id
